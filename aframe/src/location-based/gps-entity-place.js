@@ -38,7 +38,8 @@ AFRAME.registerComponent('gps-entity-place', {
     },
 
     /**
-     * Update place position
+     * Update place position, called when a place is added (or maybe removed???)
+     * but not on camera update
      * @returns {void}
      */
     _updatePosition: function () {
@@ -63,7 +64,6 @@ AFRAME.registerComponent('gps-entity-place', {
 
         position.z = this._cameraGps.computeDistanceMeters(cameraCoords, dstCoords, true);
         position.z *= this.data.latitude > cameraCoords.latitude ? -1 : 1;
-        console.log(`update position for ${this.el} to ${position}`)
         // update element's position in 3D world
         this.el.setAttribute('position', position);
     },
