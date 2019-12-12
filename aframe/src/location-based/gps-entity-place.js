@@ -11,7 +11,7 @@ AFRAME.registerComponent('gps-entity-place', {
         },
     },
     init: function () {
-        window.addEventListener('gps-camera-origin-coord-set', function() {
+        window.addEventListener('gps-camera-origin-coord-set', function () {
             if (!this._cameraGps) {
                 var camera = document.querySelector('[gps-camera]');
                 if (!camera.components['gps-camera']) {
@@ -42,27 +42,28 @@ AFRAME.registerComponent('gps-entity-place', {
      * @returns {void}
      */
     _updatePosition: function () {
-        var position = { x: 0, y: 0, z: 0 }
+        var position = {x: 0, y: 0, z: 0};
 
         // update position.x
+        var cameraCoords = this._cameraGps.currentCoords;
         var dstCoords = {
             longitude: this.data.longitude,
-            latitude: this._cameraGps.originCoords.latitude,
+            latitude: cameraCoords.latitude,
         };
 
-        position.x = this._cameraGps.computeDistanceMeters(this._cameraGps.originCoords, dstCoords, true);
+        position.x = this._cameraGps.computeDistanceMeters(cameraCoords, dstCoords, true);
         this._positionXDebug = position.x;
-        position.x *= this.data.longitude > this._cameraGps.originCoords.longitude ? 1 : -1;
+        position.x *= this.data.longitude > cameraCoords.longitude ? 1 : -1;
 
         // update position.z
-        var dstCoords = {
-            longitude: this._cameraGps.originCoords.longitude,
+        dstCoords = {
+            longitude: cameraCoords.longitude,
             latitude: this.data.latitude,
         };
 
-        position.z = this._cameraGps.computeDistanceMeters(this._cameraGps.originCoords, dstCoords, true);
-        position.z *= this.data.latitude > this._cameraGps.originCoords.latitude ? -1 : 1;
-
+        position.z = this._cameraGps.computeDistanceMeters(cameraCoords, dstCoords, true);
+        position.z *= this.data.latitude > cameraCoords.latitude ? -1 : 1;
+        console.log(`update position for ${this.el} to ${position}`)
         // update element's position in 3D world
         this.el.setAttribute('position', position);
     },
