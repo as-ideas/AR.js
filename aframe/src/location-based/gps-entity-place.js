@@ -44,9 +44,9 @@ AFRAME.registerComponent('gps-entity-place', {
      */
     _updatePosition: function () {
         var position = {x: 0, y: 0, z: 0};
-
+        // must be origin, because all entities are place around this point
+        var cameraCoords = this._cameraGps.originCoords;
         // update position.x
-        var cameraCoords = this._cameraGps.currentCoords;
         var dstCoords = {
             longitude: this.data.longitude,
             latitude: cameraCoords.latitude,
