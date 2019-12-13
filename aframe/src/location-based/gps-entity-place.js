@@ -38,7 +38,7 @@ AFRAME.registerComponent('gps-entity-place', {
     },
 
     /**
-     * Update place position, called when a place is added (or maybe removed???)
+     * Update place position, called when a place is added (or maybe moved in the scene???)
      * but not on camera update
      * @returns {void}
      */
