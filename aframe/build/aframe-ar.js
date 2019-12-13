@@ -8901,20 +8901,19 @@ AFRAME.registerComponent('gps-camera', {
                 document.body.removeChild(loader)
             }
             window.dispatchEvent(new CustomEvent('gps-camera-origin-coord-set'));
-            console.debug('gps-camera-origin-coord-set');
         } else {
             this._setPosition();
         }
-        // show nearest objects and hide far away objects
-        // FIXME this should not be here in the camera code because we're dealing with entity-places
-        document.querySelectorAll('[gps-entity-place]').forEach(function(element) {
-            var position=element.components["gps-entity-place"].data
-            var distanceMeters = this.computeDistanceMeters(this.currentCoords,position,true);
-            var shouldBeVisible = distanceMeters <=this.data.maxDistance;
-            element.setAttribute('visible', shouldBeVisible);
-        },this);
-
-
+        if (this.data.maxDistance < Number.MAX_SAFE_INTEGER) {
+            // show nearest objects and hide far away objects
+            // FIXME this should not be here in the camera code because we're dealing with entity-places
+            document.querySelectorAll('[gps-entity-place]').forEach(function (element) {
+                var position = element.components["gps-entity-place"].data
+                var distanceMeters = this.computeDistanceMeters(this.currentCoords, position, true);
+                var shouldBeVisible = distanceMeters <= this.data.maxDistance;
+                element.setAttribute('visible', shouldBeVisible);
+            }, this);
+        }
     },
     _setPosition: function () {
         var position = this.el.getAttribute('position');
