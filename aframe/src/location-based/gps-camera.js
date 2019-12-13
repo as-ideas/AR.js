@@ -189,6 +189,16 @@ AFRAME.registerComponent('gps-camera', {
         } else {
             this._setPosition();
         }
+        if (this.data.maxDistance < Number.MAX_SAFE_INTEGER) {
+            // show nearest objects and hide far away objects
+            // FIXME this should not be here in the camera code because we're dealing with entity-places
+            document.querySelectorAll('[gps-entity-place]').forEach(function (element) {
+                var position = element.components["gps-entity-place"].data
+                var distanceMeters = this.computeDistanceMeters(this.currentCoords, position, true);
+                var shouldBeVisible = distanceMeters <= this.data.maxDistance;
+                element.setAttribute('visible', shouldBeVisible);
+            }, this);
+        }
     },
     _setPosition: function () {
         var position = this.el.getAttribute('position');
@@ -234,8 +244,7 @@ AFRAME.registerComponent('gps-camera', {
 
         // if function has been called for a place, and if it's too near and a min distance has been set,
         // set a very high distance to hide the object
-        if (isPlace && ((this.data.minDistance && this.data.minDistance > 0 && distance < this.data.minDistance) ||
-            (this.data.maxDistance && this.data.maxDistance > 0 && distance > this.data.maxDistance))) {
+        if (isPlace && this.data.minDistance && this.data.minDistance > 0 && distance < this.data.minDistance) {
             return Number.MAX_SAFE_INTEGER;
         }
 

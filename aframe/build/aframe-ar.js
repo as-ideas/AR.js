@@ -8905,6 +8905,16 @@ AFRAME.registerComponent('gps-camera', {
         } else {
             this._setPosition();
         }
+        // show nearest objects and hide far away objects
+        // FIXME this should not be here in the camera code because we're dealing with entity-places
+        document.querySelectorAll('[gps-entity-place]').forEach(function(element) {
+            var position=element.components["gps-entity-place"].data
+            var distanceMeters = this.computeDistanceMeters(this.currentCoords,position,true);
+            var shouldBeVisible = distanceMeters <=this.data.maxDistance;
+            element.setAttribute('visible', shouldBeVisible);
+        },this);
+
+
     },
     _setPosition: function () {
         var position = this.el.getAttribute('position');
@@ -8950,8 +8960,7 @@ AFRAME.registerComponent('gps-camera', {
 
         // if function has been called for a place, and if it's too near and a min distance has been set,
         // set a very high distance to hide the object
-        if (isPlace && ((this.data.minDistance && this.data.minDistance > 0 && distance < this.data.minDistance) ||
-            (this.data.maxDistance && this.data.maxDistance > 0 && distance > this.data.maxDistance))) {
+        if (isPlace && this.data.minDistance && this.data.minDistance > 0 && distance < this.data.minDistance) {
             return Number.MAX_SAFE_INTEGER;
         }
 
@@ -9078,14 +9087,15 @@ AFRAME.registerComponent('gps-entity-place', {
     },
 
     /**
-     * Update place position
+     * Update place position, called when a place is added (or maybe moved in the scene???)
+     * but not on camera update
      * @returns {void}
      */
     _updatePosition: function () {
         var position = {x: 0, y: 0, z: 0};
-
+        // must be origin, because all entities are place around this point
+        var cameraCoords = this._cameraGps.originCoords;
         // update position.x
-        var cameraCoords = this._cameraGps.currentCoords;
         var dstCoords = {
             longitude: this.data.longitude,
             latitude: cameraCoords.latitude,
@@ -9103,7 +9113,6 @@ AFRAME.registerComponent('gps-entity-place', {
 
         position.z = this._cameraGps.computeDistanceMeters(cameraCoords, dstCoords, true);
         position.z *= this.data.latitude > cameraCoords.latitude ? -1 : 1;
-        console.log(`update position for ${this.el} to ${position}`)
         // update element's position in 3D world
         this.el.setAttribute('position', position);
     },
