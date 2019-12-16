@@ -11,4 +11,4 @@ build:
 		> build/aframe-ar.js 
 
 minify: build
-#	uglifyjs build/aframe-ar.js > build/aframe-ar.min.js
+	uglifyjs build/aframe-ar.js > build/aframe-ar.min.js
