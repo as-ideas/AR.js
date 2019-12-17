@@ -108,7 +108,7 @@ AFRAME.registerComponent('gps-camera', {
         } else if ('ondeviceorientationabsolute' in window) {
             var eventName = 'deviceorientationabsolute'
         } else {
-            var eventName = ''
+            var eventName = '';
             console.error('Compass not supported')
         }
 
@@ -300,13 +300,16 @@ AFRAME.registerComponent('gps-camera', {
      * @returns {void}
      */
     _onDeviceOrientation: function (event) {
+        console.log('orientation event ' + event.type + ' is used');
         if (event.webkitCompassHeading !== undefined) {
+            console.log('webkitCompassHeading is available');
             if (event.webkitCompassAccuracy < 50) {
                 this.heading = event.webkitCompassHeading;
             } else {
                 console.warn('webkitCompassAccuracy is event.webkitCompassAccuracy');
             }
         } else if (event.alpha !== null) {
+            console.log('alpha is available');
             if (event.absolute === true || event.absolute === undefined) {
                 this.heading = this._computeCompassHeading(event.alpha, event.beta, event.gamma);
             } else {
