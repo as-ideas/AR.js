@@ -159,6 +159,9 @@ AFRAME.registerComponent('gps-camera', {
      * @returns {void}
      */
     _updatePosition: function () {
+        if(Math.random()<0.7){ // FIXME just a try to save computation power
+            return;
+        }
         // don't update if accuracy is not good enough
         if (this.currentCoords.accuracy > this.data.positionMinAccuracy) {
             if (this.data.alert && !document.getElementById('alert-popup')) {
