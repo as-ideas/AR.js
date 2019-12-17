@@ -103,10 +103,10 @@ AFRAME.registerComponent('gps-camera', {
      * @returns {string} event name
      */
     _getDeviceOrientationEventName: function () {
-        if ('ondeviceorientation' in window) {
-            var eventName = 'deviceorientation'
-        } else if ('ondeviceorientationabsolute' in window) {
+        if ('ondeviceorientationabsolute' in window) {
             var eventName = 'deviceorientationabsolute'
+        } else if ('ondeviceorientation' in window) {
+            var eventName = 'deviceorientation'
         } else {
             var eventName = '';
             console.error('Compass not supported')
@@ -159,7 +159,7 @@ AFRAME.registerComponent('gps-camera', {
      * @returns {void}
      */
     _updatePosition: function () {
-        if(Math.random()<0.7){ // FIXME just a try to save computation power
+        if (Math.random() < 0.7) { // FIXME just a try to save computation power
             return;
         }
         // don't update if accuracy is not good enough
